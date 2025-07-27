@@ -5,7 +5,11 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/environment_detection.sh"
 
-require_commands sudo curl grep
+# Only require curl and grep; sudo requirement handled dynamically
+require_commands curl grep
+
+# Determine sudo usage
+detect_sudo
 
 # Skip installation if Ansible already present
 if command -v ansible &>/dev/null; then
@@ -17,13 +21,13 @@ detect_os_arch
 
 case "$PKG_MANAGER" in
   apt-get)
-    sudo apt-get update -y
-    sudo apt-get install -y software-properties-common
-    sudo add-apt-repository --yes --update ppa:ansible/ansible
-    sudo apt-get install -y ansible
+    ${SUDO} apt-get update -y
+    ${SUDO} apt-get install -y software-properties-common
+    ${SUDO} add-apt-repository --yes --update ppa:ansible/ansible
+    ${SUDO} apt-get install -y ansible
     ;;
   dnf|yum)
-    sudo "$PKG_MANAGER" install -y ansible
+    ${SUDO} "$PKG_MANAGER" install -y ansible
     ;;
   *)
     echo "Unsupported package manager: $PKG_MANAGER" >&2

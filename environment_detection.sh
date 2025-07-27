@@ -37,4 +37,21 @@ detect_os_arch() {
   fi
 
   export PKG_MANAGER ARCH ASSET_EXT
+}
+
+# Determine whether to prefix commands with sudo.
+# Exports: SUDO
+detect_sudo() {
+  if [ "$(id -u)" -eq 0 ]; then
+    SUDO=""
+  else
+    if command -v sudo &>/dev/null; then
+      SUDO="sudo"
+    else
+      echo "This script requires root privileges or sudo but sudo is not installed." >&2
+      exit 1
+    fi
+  fi
+
+  export SUDO
 } 

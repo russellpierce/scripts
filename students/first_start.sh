@@ -1,7 +1,44 @@
 #!/bin/bash
 
+# Fail on errors, unset variables, or pipe failures
+set -euo pipefail
+
 # This will be executed as a Sagemaker Notebook Instance Lifecycle Config Script
 # On the first start of the notebook instance, this script will be executed.
+
+# Detect if running as root; if so, set SUDO="" else SUDO="sudo"
+if [ "$(id -u)" -eq 0 ]; then
+  SUDO=""
+else
+  SUDO="sudo"
+fi
+
+# Ensure curl and unzip are present (Amazon Linux / EC2 Linux)
+if ! command -v curl &>/dev/null || ! command -v unzip &>/dev/null; then
+  if command -v yum &>/dev/null; then
+    ${SUDO} yum install -y curl unzip
+  elif command -v dnf &>/dev/null; then
+    ${SUDO} dnf install -y curl unzip
+  else
+    echo "Neither yum nor dnf found. This script is intended for Amazon Linux." >&2
+    exit 1
+  fi
+fi
+
+# Shutdown idle instances after default interval specified in script
+curl -O https://raw.githubusercontent.com/aws-samples/amazon-sagemaker-notebook-instance-lifecycle-config-samples/master/scripts/auto-stop-idle/on-start.sh
+chmod +x on-start.sh
+./on-start.sh
+
+# Fetch and unzip russellpierce/scripts public repo from GitHub
+curl -L -o scripts.zip https://github.com/russellpierce/scripts/archive/refs/heads/main.zip
+unzip -o scripts.zip
+rm scripts.zip
+
+# Run the project’s Ansible installation script (honours its own sudo logic).
+${SUDO} ./scripts/install_ansible.sh
+
+# Non-Ansible Managed Software
 
 # Install uv
 uv --version || (curl -LsSf https://astral.sh/uv/install.sh | sh)
@@ -9,20 +46,3 @@ uv --version || (curl -LsSf https://astral.sh/uv/install.sh | sh)
 curl -fsSL https://ollama.com/install.sh | sh
 ollama get gemma3n:latest
 ollama get llama3.2:1b
-
-sudo apt-get install -y build-essential cmake htop
-
-wget https://raw.githubusercontent.com/aws-samples/amazon-sagemaker-notebook-instance-lifecycle-config-samples/master/scripts/auto-stop-idle/autostop.py
-wget https://raw.githubusercontent.com/aws-samples/amazon-sagemaker-notebook-instance-lifecycle-config-samples/master/scripts/auto-stop-idle/on-start.sh
-
-chmod +x on-start.sh
-chmod +x autostop.py
-
-# add to crontab
-# crontab -e
-# @reboot /home/ec2-user/on-start.sh
-
-# Install latest pandoc
-bash "$(dirname "$0")/install_pandoc.sh"
-
-

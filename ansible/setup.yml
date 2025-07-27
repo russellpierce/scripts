@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  become: true
+  vars:
+    docker_edition: "ce"
+  roles:
+    - geerlingguy.docker
+    - andrewrothstein.pandoc 

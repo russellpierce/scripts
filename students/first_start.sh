@@ -3,6 +3,7 @@
 # Fail on errors, unset variables, or pipe failures
 set -euo pipefail
 
+# Targeting Amazon Linux
 # This will be executed as a Sagemaker Notebook Instance Lifecycle Config Script
 # On the first start of the notebook instance, this script will be executed.
 
@@ -27,6 +28,8 @@ fi
 
 # Shutdown idle instances after default interval specified in script
 curl -O https://raw.githubusercontent.com/aws-samples/amazon-sagemaker-notebook-instance-lifecycle-config-samples/master/scripts/auto-stop-idle/on-start.sh
+# Ensure UNIX line endings
+sed -i 's/\r$//' on-start.sh
 chmod +x on-start.sh
 ./on-start.sh
 

@@ -3,7 +3,8 @@
 # Fail on errors, unset variables, or pipe failures
 set -euo pipefail
 
-# Targeting Amazon Linux
+# Targeting Amazon Linux; it enforces a 5 minute timeout on the script
+
 # This will be executed as a Sagemaker Notebook Instance Lifecycle Config Script
 # On the first start of the notebook instance, this script will be executed.
 
@@ -45,7 +46,3 @@ ${SUDO} ./scripts/install_ansible.sh
 
 # Install uv
 uv --version || (curl -LsSf https://astral.sh/uv/install.sh | sh)
-# uv python install 3.10.4
-curl -fsSL https://ollama.com/install.sh | sh
-ollama get gemma3n:latest
-ollama get llama3.2:1b

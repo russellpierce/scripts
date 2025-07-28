@@ -40,7 +40,7 @@ unzip -o scripts.zip
 rm scripts.zip
 
 # Run the project’s Ansible installation script (honours its own sudo logic).
-${SUDO} ./scripts/install_ansible.sh
+# ${SUDO} ./scripts/install_ansible.sh
 
 # Non-Ansible Managed Software
 

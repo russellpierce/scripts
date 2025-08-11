@@ -9,7 +9,7 @@ sudo yum update -y
 
 # Install required development libraries
 sudo yum groupinstall -y "Development Tools"
-sudo yum install -y \
+sudo yum install -y --skip-broken \
     bzip2-devel \
     ncurses-devel \
     readline-devel \
@@ -93,8 +93,7 @@ if version_lt "$glibc_version" "$required_glibc"; then
   fi
 
   # Pull required models inside the container
-  sudo docker exec ollama ollama pull gemma3n:e2b
-  sudo docker exec ollama ollama pull llama3.2:1b
+  curl -sSL https://raw.githubusercontent.com/russellpierce/ITAI4350/main/scripts/students/models.sh | bash -s --
 
   echo "Ollama container setup complete. Access the API at http://localhost:11434/."
 else
@@ -104,10 +103,11 @@ else
   if command -v dnf >/dev/null 2>&1; then
     sudo dnf -y update
     sudo dnf -y install glibc libstdc++ gcc gcc-c++ git curl
+    curl -fsSL https://ollama.com/install.sh | sh
   fi
 
   # Native install of Ollama & models, unavailable on Sagemaker's Amazon Linux
-  # curl -fsSL https://ollama.com/install.sh | sh
+  # 
   # ollama pull gemma3n:latest
   # ollama pull llama3.2:1b
   # ollama serve

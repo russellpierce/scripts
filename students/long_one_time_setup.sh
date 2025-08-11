@@ -4,6 +4,63 @@
 # Fail on errors, unset variables, or pipe failures
 set -euo pipefail
 
+# Update package list
+sudo yum update -y
+
+# Install required development libraries
+sudo yum groupinstall -y "Development Tools"
+sudo yum install -y \
+    bzip2-devel \
+    ncurses-devel \
+    readline-devel \
+    sqlite-devel \
+    openssl-devel \
+    libffi-devel \
+    xz-devel \
+    zlib-devel \
+    gdbm-devel \
+    nss-devel \
+    tk-devel \
+    tcl-devel \
+    libX11-devel \
+    libXext-devel \
+    libXrender-devel \
+    libXinerama-devel \
+    libXi-devel \
+    libXrandr-devel \
+    libXcursor-devel \
+    libXcomposite-devel \
+    libXdamage-devel \
+    libXfixes-devel \
+    libXss-devel \
+    libXtst-devel \
+    alsa-lib-devel \
+    pango-devel \
+    cairo-devel \
+    atk-devel \
+    gtk3-devel \
+    gdk-pixbuf2-devel \
+    gobject-introspection-devel \
+    glib2-devel \
+    db4-devel \
+    libuuid-devel
+
+## Install pyenv
+curl -fsSL https://pyenv.run | bash
+
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - bash)"
+
+# Restart your shell for the changes to take effect.
+
+# Load pyenv-virtualenv automatically by adding
+# the following to ~/.bashrc:
+
+eval "$(pyenv virtualenv-init -)"
+
+pyenv install 3.10
+
 # Decide whether to install Ollama natively or run it in Docker based on GLIBC version
 glibc_version=$(getconf GNU_LIBC_VERSION | awk '{print $2}')
 required_glibc=2.27
@@ -36,7 +93,7 @@ if version_lt "$glibc_version" "$required_glibc"; then
   fi
 
   # Pull required models inside the container
-  sudo docker exec ollama ollama pull gemma3n:1b
+  sudo docker exec ollama ollama pull gemma3n:e2b
   sudo docker exec ollama ollama pull llama3.2:1b
 
   echo "Ollama container setup complete. Access the API at http://localhost:11434/."
@@ -49,11 +106,11 @@ else
     sudo dnf -y install glibc libstdc++ gcc gcc-c++ git curl
   fi
 
-  # Native install of Ollama & models
-  curl -fsSL https://ollama.com/install.sh | sh
-  ollama pull gemma3n:latest
-  ollama pull llama3.2:1b
-  ollama serve
+  # Native install of Ollama & models, unavailable on Sagemaker's Amazon Linux
+  # curl -fsSL https://ollama.com/install.sh | sh
+  # ollama pull gemma3n:latest
+  # ollama pull llama3.2:1b
+  # ollama serve
 
   echo "Native Ollama setup complete. The ollama daemon is now available on port 11434."
 fi

@@ -46,3 +46,17 @@ rm scripts.zip
 
 # Install uv
 uv --version || (curl -LsSf https://astral.sh/uv/install.sh | sh)
+curl -fsSL https://pyenv.run | bash
+
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - bash)"
+
+# Restart your shell for the changes to take effect.
+
+# Load pyenv-virtualenv automatically by adding
+# the following to ~/.bashrc:
+
+eval "$(pyenv virtualenv-init -)"
+
+pyenv install 3.10

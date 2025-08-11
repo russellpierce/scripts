@@ -36,7 +36,7 @@ if version_lt "$glibc_version" "$required_glibc"; then
   fi
 
   # Pull required models inside the container
-  sudo docker exec ollama ollama pull gemma3n:
+  sudo docker exec ollama ollama pull gemma3n:1b
   sudo docker exec ollama ollama pull llama3.2:1b
 
   echo "Ollama container setup complete. Access the API at http://localhost:11434/."
@@ -53,6 +53,7 @@ else
   curl -fsSL https://ollama.com/install.sh | sh
   ollama pull gemma3n:latest
   ollama pull llama3.2:1b
+  ollama serve
 
   echo "Native Ollama setup complete. The ollama daemon is now available on port 11434."
 fi

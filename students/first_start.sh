@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo "Currently running with home directory $HOME"
+#export HOME=/home/ec2-user
+echo 
+
 # Fail on errors, unset variables, or pipe failures
 set -euo pipefail
 
@@ -48,15 +52,17 @@ rm scripts.zip
 uv --version || (curl -LsSf https://astral.sh/uv/install.sh | sh)
 curl -fsSL https://pyenv.run | bash
 
+if [ -z "$HOME" ]; then
+  export HOME="/home/ec2-user/SageMaker"
+  echo "Warning: \$HOME was empty. Set to /home/ec2-user/SageMaker."
+fi
+
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(pyenv init - bash)"' >> ~/.bashrc
+
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init - bash)"
-
-# Restart your shell for the changes to take effect.
-
-# Load pyenv-virtualenv automatically by adding
-# the following to ~/.bashrc:
-
-eval "$(pyenv virtualenv-init -)"
-
-pyenv install 3.10
+# eval "$(pyenv init - bash)"
+# eval "$(pyenv virtualenv-init -)"
+# pyenv install 3.10

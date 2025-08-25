@@ -5,7 +5,7 @@ if ! grep -qi 'amzn' /etc/os-release; then
   exit 0
 else
   uv --version || (curl -LsSf https://astral.sh/uv/install.sh | sh)
-  "AWS" > "/tmp/runtime"
+  echo "AWS" > "/tmp/runtime"
   # Generate requirements.txt from pyproject.toml using uv
   /home/ec2-user/.local/bin/uv pip compile pyproject.toml -o requirements.txt --quiet
   # Then install normally

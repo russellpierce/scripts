@@ -1,1 +1,0 @@
-curl -sSL https://raw.githubusercontent.com/russellpierce/ITAI4350/main/scripts/students/first_start.sh | bash -s --

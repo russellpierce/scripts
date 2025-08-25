@@ -4,6 +4,14 @@ echo "Currently running with home directory $HOME"
 #export HOME=/home/ec2-user
 echo 
 
+# Ensure HOME is set before proceeding with installations
+if [ -z "$HOME" ]; then
+  export HOME="/home/ec2-user/SageMaker"
+  echo "Warning: \$HOME was empty. Set to /home/ec2-user/SageMaker."
+fi
+
+echo "Using HOME directory: $HOME"
+
 # Fail on errors, unset variables, or pipe failures
 set -euo pipefail
 
@@ -50,18 +58,22 @@ rm scripts.zip
 
 # Install uv
 uv --version || (curl -LsSf https://astral.sh/uv/install.sh | sh)
-curl -fsSL https://pyenv.run | bash
+
+# Set up pyenv environment variables before installation
 
 if [ -z "$HOME" ]; then
   export HOME="/home/ec2-user/SageMaker"
   echo "Warning: \$HOME was empty. Set to /home/ec2-user/SageMaker."
 fi
+export PYENV_ROOT="$HOME/.pyenv"
+echo "Installing pyenv to: $PYENV_ROOT"
+curl -fsSL https://pyenv.run | bash
 
 echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
 echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
 echo 'eval "$(pyenv init - bash)"' >> ~/.bashrc
 
-export PYENV_ROOT="$HOME/.pyenv"
+# Add pyenv to current session PATH
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 # eval "$(pyenv init - bash)"
 # eval "$(pyenv virtualenv-init -)"

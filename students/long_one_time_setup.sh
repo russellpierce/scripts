@@ -2,7 +2,10 @@
 # Targeting Amazon Linux
 # assume that first_start.sh has already been run
 # Fail on errors, unset variables, or pipe failures
+
+
 set -euo pipefail
+export STUDENT_FILE_ROOT="https://raw.githubusercontent.com/russellpierce/ITAI4350/main/scripts/students"
 
 # Update package list
 sudo yum update -y
@@ -92,9 +95,6 @@ if version_lt "$glibc_version" "$required_glibc"; then
     sudo docker run --restart always -d --name ollama -p 11434:11434 -v "$HOME/.ollama":/root/.ollama ollama/ollama:latest
   fi
 
-  # Pull required models inside the container
-  curl -sSL https://raw.githubusercontent.com/russellpierce/ITAI4350/main/scripts/students/models.sh | bash -s --
-
   echo "Ollama container setup complete. Access the API at http://localhost:11434/."
 else
   echo "glibc $glibc_version (>= $required_glibc). Installing Ollama natively…"
@@ -110,9 +110,4 @@ else
   echo "Native Ollama setup complete. The ollama daemon is now available on port 11434."
 fi
 
-curl -sSL https://raw.githubusercontent.com/russellpierce/ITAI4350/main/scripts/students/models.sh | bash -s --
-
-# To build PDFs
-sudo yum -y install perl-Digest-MD5 texlive-xetex texlive-collection-*
-
-#--no-interaction --scheme=medium
+curl -sSL "$STUDENT_FILE_ROOT/models.sh" | bash -s -- 

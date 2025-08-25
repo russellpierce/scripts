@@ -89,7 +89,7 @@ if version_lt "$glibc_version" "$required_glibc"; then
 
   # Launch the Ollama container (only if not already running)
   if ! sudo docker ps --format '{{.Names}}' | grep -q '^ollama$'; then
-    sudo docker run -d --name ollama -p 11434:11434 -v "$HOME/.ollama":/root/.ollama ollama/ollama:latest
+    sudo docker run --restart always -d --name ollama -p 11434:11434 -v "$HOME/.ollama":/root/.ollama ollama/ollama:latest
   fi
 
   # Pull required models inside the container
@@ -107,10 +107,7 @@ else
   fi
 
   # Native install of Ollama & models, unavailable on Sagemaker's Amazon Linux
-  # 
-  # ollama pull gemma3n:latest
-  # ollama pull llama3.2:1b
-  # ollama serve
-
   echo "Native Ollama setup complete. The ollama daemon is now available on port 11434."
 fi
+
+curl -sSL https://raw.githubusercontent.com/russellpierce/ITAI4350/main/scripts/students/models.sh | bash -s --

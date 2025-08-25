@@ -111,3 +111,8 @@ else
 fi
 
 curl -sSL https://raw.githubusercontent.com/russellpierce/ITAI4350/main/scripts/students/models.sh | bash -s --
+
+# To build PDFs
+sudo yum -y install perl-Digest-MD5 texlive-xetex texlive-collection-*
+
+#--no-interaction --scheme=medium

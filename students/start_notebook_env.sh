@@ -16,6 +16,5 @@ else
   if ! sudo docker ps --format '{{.Names}}' | grep -q '^ollama$'; then
     sudo docker run -d --name ollama -p 11434:11434 -v "$HOME/.ollama":/root/.ollama ollama/ollama:latest
   fi
-  curl -sSL https://raw.githubusercontent.com/russellpierce/ITAI4350/main/scripts/students/models.sh | bash -s --
+  curl -sSL https://raw.githubusercontent.com/russellpierce/scripts/refs/heads/main/students/models.sh | bash -s --
 fi
-

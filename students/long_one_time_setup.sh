@@ -5,7 +5,7 @@
 
 
 set -euo pipefail
-export STUDENT_FILE_ROOT="https://raw.githubusercontent.com/russellpierce/ITAI4350/main/scripts/students"
+export STUDENT_FILE_ROOT="https://raw.githubusercontent.com/russellpierce/scripts/refs/heads/main/students"
 
 # Update package list
 sudo yum update -y

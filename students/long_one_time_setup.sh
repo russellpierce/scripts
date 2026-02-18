@@ -110,4 +110,4 @@ else
   echo "Native Ollama setup complete. The ollama daemon is now available on port 11434."
 fi
 
-curl -sSL "$STUDENT_FILE_ROOT/models.sh" | bash -s -- 
+curl -sSL "$STUDENT_FILE_ROOT/models.sh" -o models.sh && chmod +x models.sh && ./models.sh
